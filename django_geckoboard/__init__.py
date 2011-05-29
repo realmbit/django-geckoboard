@@ -297,6 +297,48 @@ vs. anonymous users::
                                   # descending.
         }
 
+
+``Bullet Graph``
+----------
+
+Geckoboard bullet graph decorator.
+
+The decorated view must return a dictionary with the following values:
+    - label = string.
+    - sublabel = string.
+    - axis = list of numbers
+             or a dictionary of 'min', 'max', 'points', [optional 'precision', default 0] (all numbers) to generate the axis points.
+
+And optional additional entries:
+    - orientation = either 'vertical' or 'horizontal', default is horizontal.
+    - range = a dictionary with:
+      - red = a dictionary with 'start' and 'end' entries.
+      - amber = a dictionary with 'start' and 'end' entries.
+      - green = a dictionary with 'start' and 'end' entries.
+    - measure = a dictionary with:
+      - current = a dictionary with 'start' and 'end' entries.
+      - projected = a dictionary with 'start' and 'end' entries.
+    - comparative = list of numbers
+
+To create a bullet graph of the number of users:
+
+    @bullet_graph
+    def user_count(self):
+        return {"label": "Users",
+                "sublabel": "Keep an eye on this",
+                "axis": [1,5,10,15,20],
+                "orientation": 'vertical',
+                "range": {"red": {"start":0, "end":5},
+                          "amber": {"start":5, "end":10},
+                          "green": {"start":10, "end":15},
+                         },
+                "measure": {"current": {"start":0,"end":Users.objects.all.count()},
+                            "projected": {"start":9,"end":12},
+                           },
+                "comparative": [11,14],
+               }
+
+
 .. _`Geckoboard API`: http://geckoboard.zendesk.com/forums/207979-geckoboard-api
 """
 

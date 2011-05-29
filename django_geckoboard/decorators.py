@@ -268,6 +268,56 @@ class FunnelWidgetDecorator(WidgetDecorator):
 funnel = FunnelWidgetDecorator()
 
 
+class BulletGraphWidgetDecorator(WidgetDecorator):
+    """
+    Geckoboard bullet graph decorator.
+
+    The decorated view must return a dictionary with the following values:
+        - label = string.
+        - sublabel = string.
+        - axis = list of numbers
+                 or a dictionary of 'min', 'max', 'points', [optional 'precision', default 0] (all numbers) to generate the axis points.
+
+    And optional additional entries:
+        - orientation = either 'vertical' or 'horizontal', default is horizontal.
+        - range = a dictionary with:
+          - red = a dictionary with 'start' and 'end' entries.
+          - amber = a dictionary with 'start' and 'end' entries.
+          - green = a dictionary with 'start' and 'end' entries.
+        - measure = a dictionary with:
+          - current = a dictionary with 'start' and 'end' entries.
+          - projected = a dictionary with 'start' and 'end' entries.
+        - comparative = list of numbers
+    
+    See the geckoboard documentation for more explanation of these arguments.
+    """
+
+    def _convert_view_result(self, result):
+        #Calculate the axis points if they aren't set already
+        if isinstance(result["axis"], dict):
+            d = result["axis"]
+            min_pt = d["min"]
+            max_pt = d["max"]
+            pts = d.get("points", 1)
+            precision = d.get("precision", 0)
+            if pts < 1:
+                raise ValueError("Points must be at least 2")
+            elif pts == 1:
+                axis_pts = [min_pt, max_pt]
+            else:
+                step = (max_pt - min_pt) / float(pts - 1)
+                axis_pts = (step * x + min_pt for x in range(0,pts))
+            if precision == 0:
+                axis = [int(x) for x in axis_pts]
+            else:
+                axis = [float("%.*f" % (precision, x)) for x in axis_pts]
+            result["axis"] = axis
+
+        return result
+
+bullet_graph = BulletGraphWidgetDecorator()
+
+
 def _is_api_key_correct(request):
     """Return whether the Geckoboard API key on the request is correct."""
     api_key = getattr(settings, 'GECKOBOARD_API_KEY', None)

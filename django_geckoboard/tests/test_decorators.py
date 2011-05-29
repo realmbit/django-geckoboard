@@ -6,7 +6,7 @@ from django.http import HttpRequest, HttpResponseForbidden
 from django.utils.datastructures import SortedDict
 
 from django_geckoboard.decorators import widget, number_widget, rag_widget, \
-        text_widget, pie_chart, line_chart, geck_o_meter, TEXT_NONE, \
+        text_widget, pie_chart, line_chart, geck_o_meter, bullet_graph, TEXT_NONE, \
         TEXT_INFO, TEXT_WARN, funnel
 from django_geckoboard.tests.utils import TestCase
 import base64
@@ -350,3 +350,80 @@ class FunnelDecoratorTestCase(TestCase):
         self.assertEqual('{"item": [{"value": 100, "label": "step 1"}, '
                     '{"value": 50, "label": "step 2"}], "type": "reverse", '
                     '"percentage": "hide"}', resp.content)
+
+
+class BulletGraphDecoratorTestCase(TestCase):
+    """
+    Tests for the ``bullet graph`` decorator
+    """
+
+    def setUp(self):
+        super(BulletGraphDecoratorTestCase, self).setUp()
+        self.settings_manager.delete('GECKOBOARD_API_KEY')
+        self.request = HttpRequest()
+        self.request.POST['format'] = '2'
+
+    def _get_test_data(self):
+        return {"label": "test label",
+                "sublabel": "test sub label",
+                "axis": [1,5,10,15,20],
+                "orientation": 'vertical',
+                "range": {"red": {"start":0, "end":5},
+                          "amber": {"start":5, "end":10},
+                          "green": {"start":10, "end":15},
+                         },
+                "measure": {"current": {"start":0,"end":7},
+                            "projected": {"start":9,"end":12},
+                           },
+                "comparative": [11,14],
+               }
+
+    def test_bullet_graph(self):
+        data = self._get_test_data()
+        widget = bullet_graph(lambda r: data)
+        resp = widget(self.request)
+        # The basic case is to just pass through the data
+        self.assertEqual(
+                '{'
+                '"orientation": "vertical", '
+                '"label": "test label", '
+                '"sublabel": "test sub label", '
+                '"range": {'
+                '"amber": {"start": 5, "end": 10}, '
+                '"green": {"start": 10, "end": 15}, '
+                '"red": {"start": 0, "end": 5}'
+                '}, '
+                '"measure": {'
+                '"current": {"start": 0, "end": 7}, '
+                '"projected": {"start": 9, "end": 12}'
+                '}, '
+                '"comparative": [11, 14], '
+                '"axis": [1, 5, 10, 15, 20]'
+                '}', 
+                resp.content)
+
+    def test_point_generation(self):
+        data = self._get_test_data()
+        data["axis"] = {"min": 0, "max": 20, "points": 5, "precision": 0}
+        widget = bullet_graph(lambda r: data)
+        resp = widget(self.request)
+        # The basic case is to just pass through the data
+        self.assertEqual(
+                '{'
+                '"orientation": "vertical", '
+                '"label": "test label", '
+                '"sublabel": "test sub label", '
+                '"range": {'
+                '"amber": {"start": 5, "end": 10}, '
+                '"green": {"start": 10, "end": 15}, '
+                '"red": {"start": 0, "end": 5}'
+                '}, '
+                '"measure": {'
+                '"current": {"start": 0, "end": 7}, '
+                '"projected": {"start": 9, "end": 12}'
+                '}, '
+                '"comparative": [11, 14], '
+                '"axis": [0, 5, 10, 15, 20]'
+                '}', 
+                resp.content)
+
