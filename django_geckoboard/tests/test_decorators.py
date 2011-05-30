@@ -364,11 +364,12 @@ class BulletGraphDecoratorTestCase(TestCase):
         self.request.POST['format'] = '2'
 
     def _get_test_data(self):
-        return {"label": "test label",
+        return {
+                "orientation": 'vertical',
                 "item": {
+                         "label": "test label",
                          "sublabel": "test sub label",
                          "axis": {"point": [1,5,10,15,20]},
-                         "orientation": 'vertical',
                          "range": {"red": {"start":0, "end":5},
                                    "amber": {"start":5, "end":10},
                                    "green": {"start":10, "end":15},
@@ -387,7 +388,6 @@ class BulletGraphDecoratorTestCase(TestCase):
         # The basic case is to just pass through the data
         self.assertEqual(
                 '{'
-                '"orientation": "vertical", '
                 '"item": {'
                 '"label": "test label", '
                 '"sublabel": "test sub label", '
@@ -402,18 +402,19 @@ class BulletGraphDecoratorTestCase(TestCase):
                 '}, '
                 '"comparative": {"point": [11, 14]}, '
                 '"axis": {"point": [1, 5, 10, 15, 20]}'
-                '}}', 
+                '}, '
+                '"orientation": "vertical"'
+                '}', 
                 resp.content)
 
     def test_point_generation(self):
         data = self._get_test_data()
-        data["axis"] = {"min": 0, "max": 20, "points": 5, "precision": 0}
+        data["item"]["axis"] = {"min": 0, "max": 20, "points": 5, "precision": 0}
         widget = bullet_graph(lambda r: data)
         resp = widget(self.request)
         # The basic case is to just pass through the data
         self.assertEqual(
                 '{'
-                '"orientation": "vertical", '
                 '"item": {'
                 '"label": "test label", '
                 '"sublabel": "test sub label", '
@@ -428,7 +429,8 @@ class BulletGraphDecoratorTestCase(TestCase):
                 '}, '
                 '"comparative": {"point": [11, 14]}, '
                 '"axis": {"point": [0, 5, 10, 15, 20]}'
+                '}, '
+                '"orientation": "vertical"'
                 '}', 
-                '}}', 
                 resp.content)
 
