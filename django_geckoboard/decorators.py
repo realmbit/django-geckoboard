@@ -294,12 +294,12 @@ class BulletGraphWidgetDecorator(WidgetDecorator):
 
     def _convert_view_result(self, result):
         #Calculate the axis points if they aren't set already
-        if isinstance(result["axis"], dict):
+        if not result["axis"].get("point", None):
             d = result["axis"]
-            min_pt = d["min"]
-            max_pt = d["max"]
-            pts = d.get("points", 1)
-            precision = d.get("precision", 0)
+            min_pt = d.pop("min")
+            max_pt = d.pop("max")
+            pts = d.pop("points", 1)
+            precision = d.pop("precision", 0)
             if pts < 1:
                 raise ValueError("Points must be at least 2")
             elif pts == 1:
@@ -311,7 +311,7 @@ class BulletGraphWidgetDecorator(WidgetDecorator):
                 axis = [int(x) for x in axis_pts]
             else:
                 axis = [float("%.*f" % (precision, x)) for x in axis_pts]
-            result["axis"] = axis
+            result["axis"]["point"] = axis
 
         return result
 

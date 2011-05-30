@@ -366,7 +366,7 @@ class BulletGraphDecoratorTestCase(TestCase):
     def _get_test_data(self):
         return {"label": "test label",
                 "sublabel": "test sub label",
-                "axis": [1,5,10,15,20],
+                "axis": {"point": [1,5,10,15,20]},
                 "orientation": 'vertical',
                 "range": {"red": {"start":0, "end":5},
                           "amber": {"start":5, "end":10},
@@ -398,7 +398,7 @@ class BulletGraphDecoratorTestCase(TestCase):
                 '"projected": {"start": 9, "end": 12}'
                 '}, '
                 '"comparative": [11, 14], '
-                '"axis": [1, 5, 10, 15, 20]'
+                '"axis": {"point": [1, 5, 10, 15, 20]}'
                 '}', 
                 resp.content)
 
@@ -423,7 +423,7 @@ class BulletGraphDecoratorTestCase(TestCase):
                 '"projected": {"start": 9, "end": 12}'
                 '}, '
                 '"comparative": [11, 14], '
-                '"axis": [0, 5, 10, 15, 20]'
+                '"axis": {"point": [0, 5, 10, 15, 20]}'
                 '}', 
                 resp.content)
 
