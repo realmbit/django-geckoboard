@@ -304,21 +304,20 @@ vs. anonymous users::
 Geckoboard bullet graph decorator.
 
 The decorated view must return a dictionary with the following values:
-    - label = string.
-    - sublabel = string.
-    - axis = list of points (numbers)
-             or a dictionary of 'min', 'max', 'points', [optional 'precision', default 0] (all numbers) to generate the axis points.
-
-And optional additional entries:
-    - orientation = either 'vertical' or 'horizontal', default is horizontal.
-    - range = a dictionary with:
-      - red = a dictionary with 'start' and 'end' entries.
-      - amber = a dictionary with 'start' and 'end' entries.
-      - green = a dictionary with 'start' and 'end' entries.
-    - measure = a dictionary with:
-      - current = a dictionary with 'start' and 'end' entries.
-      - projected = a dictionary with 'start' and 'end' entries.
-    - comparative = list of points (numbers)
+        - orientation = either 'vertical' or 'horizontal'
+        - item = a dictionary containing
+            - label = string.
+            - sublabel = string.
+            - axis = list of numbers
+                     or a dictionary of 'min', 'max', 'points', [optional 'precision', default 0] (all numbers) to generate the axis points.
+            - range = a dictionary with:
+              - red = a dictionary with 'start' and 'end' entries.
+              - amber = a dictionary with 'start' and 'end' entries.
+              - green = a dictionary with 'start' and 'end' entries.
+            - measure = a dictionary with:
+              - current = a dictionary with 'start' and 'end' entries.
+              - projected = a dictionary with 'start' and 'end' entries.
+            - comparative = list of numbers
 
 To create a bullet graph of the number of users:
 
