@@ -295,7 +295,7 @@ class BulletGraphWidgetDecorator(WidgetDecorator):
     def _convert_view_result(self, result):
         #Calculate the axis points if they aren't set already
         if not result["axis"].get("point", None):
-            d = result["axis"]
+            d = result["item"]["axis"]
             min_pt = d.pop("min")
             max_pt = d.pop("max")
             pts = d.pop("points", 1)
@@ -311,7 +311,7 @@ class BulletGraphWidgetDecorator(WidgetDecorator):
                 axis = [int(x) for x in axis_pts]
             else:
                 axis = [float("%.*f" % (precision, x)) for x in axis_pts]
-            result["axis"]["point"] = axis
+            result["item"]["axis"]["point"] = axis
 
         return result
 

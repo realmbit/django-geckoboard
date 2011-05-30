@@ -365,17 +365,19 @@ class BulletGraphDecoratorTestCase(TestCase):
 
     def _get_test_data(self):
         return {"label": "test label",
-                "sublabel": "test sub label",
-                "axis": {"point": [1,5,10,15,20]},
-                "orientation": 'vertical',
-                "range": {"red": {"start":0, "end":5},
-                          "amber": {"start":5, "end":10},
-                          "green": {"start":10, "end":15},
-                         },
-                "measure": {"current": {"start":0,"end":7},
-                            "projected": {"start":9,"end":12},
-                           },
-                "comparative": [11,14],
+                "item": {
+                         "sublabel": "test sub label",
+                         "axis": {"point": [1,5,10,15,20]},
+                         "orientation": 'vertical',
+                         "range": {"red": {"start":0, "end":5},
+                                   "amber": {"start":5, "end":10},
+                                   "green": {"start":10, "end":15},
+                                  },
+                         "measure": {"current": {"start":0,"end":7},
+                                     "projected": {"start":9,"end":12},
+                                    },
+                         "comparative": {"point": [11,14]},
+                        }
                }
 
     def test_bullet_graph(self):
@@ -386,6 +388,7 @@ class BulletGraphDecoratorTestCase(TestCase):
         self.assertEqual(
                 '{'
                 '"orientation": "vertical", '
+                '"item": {'
                 '"label": "test label", '
                 '"sublabel": "test sub label", '
                 '"range": {'
@@ -397,9 +400,9 @@ class BulletGraphDecoratorTestCase(TestCase):
                 '"current": {"start": 0, "end": 7}, '
                 '"projected": {"start": 9, "end": 12}'
                 '}, '
-                '"comparative": [11, 14], '
+                '"comparative": {"point": [11, 14]}, '
                 '"axis": {"point": [1, 5, 10, 15, 20]}'
-                '}', 
+                '}}', 
                 resp.content)
 
     def test_point_generation(self):
@@ -411,6 +414,7 @@ class BulletGraphDecoratorTestCase(TestCase):
         self.assertEqual(
                 '{'
                 '"orientation": "vertical", '
+                '"item": {'
                 '"label": "test label", '
                 '"sublabel": "test sub label", '
                 '"range": {'
@@ -422,8 +426,9 @@ class BulletGraphDecoratorTestCase(TestCase):
                 '"current": {"start": 0, "end": 7}, '
                 '"projected": {"start": 9, "end": 12}'
                 '}, '
-                '"comparative": [11, 14], '
+                '"comparative": {"point": [11, 14]}, '
                 '"axis": {"point": [0, 5, 10, 15, 20]}'
                 '}', 
+                '}}', 
                 resp.content)
 

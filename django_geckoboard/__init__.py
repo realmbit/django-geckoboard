@@ -306,7 +306,7 @@ Geckoboard bullet graph decorator.
 The decorated view must return a dictionary with the following values:
     - label = string.
     - sublabel = string.
-    - axis = list of numbers
+    - axis = list of points (numbers)
              or a dictionary of 'min', 'max', 'points', [optional 'precision', default 0] (all numbers) to generate the axis points.
 
 And optional additional entries:
@@ -318,24 +318,26 @@ And optional additional entries:
     - measure = a dictionary with:
       - current = a dictionary with 'start' and 'end' entries.
       - projected = a dictionary with 'start' and 'end' entries.
-    - comparative = list of numbers
+    - comparative = list of points (numbers)
 
 To create a bullet graph of the number of users:
 
     @bullet_graph
     def user_count(self):
         return {"label": "Users",
-                "sublabel": "Keep an eye on this",
-                "axis": [1,5,10,15,20],
-                "orientation": 'vertical',
-                "range": {"red": {"start":0, "end":5},
-                          "amber": {"start":5, "end":10},
-                          "green": {"start":10, "end":15},
-                         },
-                "measure": {"current": {"start":0,"end":Users.objects.all.count()},
-                            "projected": {"start":9,"end":12},
-                           },
-                "comparative": [11,14],
+                "item": {
+                         "sublabel": "Keep an eye on this",
+                         "axis": {"point": [1,5,10,15,20]},
+                         "orientation": 'vertical',
+                         "range": {"red": {"start":0, "end":5},
+                                   "amber": {"start":5, "end":10},
+                                   "green": {"start":10, "end":15},
+                                  },
+                         "measure": {"current": {"start":0,"end":7},
+                                     "projected": {"start":9,"end":12},
+                                    },
+                         "comparative": {"point": [11,14]},
+                        }
                }
 
 
