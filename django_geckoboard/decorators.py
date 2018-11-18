@@ -4,6 +4,9 @@ Geckoboard decorators.
 
 import base64
 from xml.dom.minidom import Document
+from collections import OrderedDict
+import json
+
 
 try:
     from functools import wraps
@@ -13,9 +16,7 @@ except ImportError:
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseForbidden
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.datastructures import SortedDict
 from django.utils.decorators import available_attrs
-from django.utils import simplejson
 
 
 TEXT_NONE = 0
@@ -86,7 +87,7 @@ class RAGWidgetDecorator(WidgetDecorator):
         for elem in result:
             if not isinstance(elem, (tuple, list)):
                 elem = [elem]
-            item = SortedDict()
+            item = OrderedDict()
             if elem[0] is None:
                 item['value'] = ''
             else:
@@ -118,7 +119,7 @@ class TextWidgetDecorator(WidgetDecorator):
         for elem in result:
             if not isinstance(elem, (tuple, list)):
                 elem = [elem]
-            item = SortedDict()
+            item = OrderedDict()
             item['text'] = elem[0]
             if len(elem) > 1 and elem[1] is not None:
                 item['type'] = elem[1]
@@ -144,7 +145,7 @@ class PieChartWidgetDecorator(WidgetDecorator):
         for elem in result:
             if not isinstance(elem, (tuple, list)):
                 elem = [elem]
-            item = SortedDict()
+            item = OrderedDict()
             item['value'] = elem[0]
             if len(elem) > 1:
                 item['label'] = elem[1]
@@ -171,9 +172,9 @@ class LineChartWidgetDecorator(WidgetDecorator):
     """
 
     def _convert_view_result(self, result):
-        data = SortedDict()
+        data = OrderedDict()
         data['item'] = list(result[0])
-        data['settings'] = SortedDict()
+        data['settings'] = OrderedDict()
 
         if len(result) > 1:
             x_axis = result[1]
@@ -213,10 +214,10 @@ class GeckOMeterWidgetDecorator(WidgetDecorator):
 
     def _convert_view_result(self, result):
         value, min, max = result
-        data = SortedDict()
+        data = OrderedDict()
         data['item'] = value
-        data['max'] = SortedDict()
-        data['min'] = SortedDict()
+        data['max'] = OrderedDict()
+        data['min'] = OrderedDict()
 
         if not isinstance(max, (tuple, list)):
             max = [max]
@@ -253,7 +254,7 @@ class FunnelWidgetDecorator(WidgetDecorator):
     """
 
     def _convert_view_result(self, result):
-        data = SortedDict()
+        data = OrderedDict()
         items = result.get('items', [])
 
         # sort the items in order if so desired
@@ -287,7 +288,7 @@ class BulletGraphWidgetDecorator(WidgetDecorator):
               - current = a dictionary with 'start' and 'end' entries.
               - projected = a dictionary with 'start' and 'end' entries.
             - comparative = list of numbers
-    
+
     See the geckoboard documentation for more explanation of these arguments.
     """
 
@@ -341,7 +342,7 @@ def _render(request, data):
         return _render_xml(data)
 
 def _render_json(data):
-    return simplejson.dumps(data)
+    return json.dumps(data)
 
 def _render_xml(data):
     doc = Document()
