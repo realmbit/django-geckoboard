@@ -3,7 +3,7 @@ Tests for the Geckoboard decorators.
 """
 
 from django.http import HttpRequest, HttpResponseForbidden
-from django.utils.datastructures import SortedDict
+from collections import OrderedDict 
 
 from django_geckoboard.decorators import widget, number_widget, rag_widget, \
         text_widget, pie_chart, line_chart, geck_o_meter, bullet_graph, TEXT_NONE, \
@@ -84,13 +84,13 @@ class WidgetDecoratorTestCase(TestCase):
         self.assertEqual('"test"', resp.content)
 
     def test_dict_xml(self):
-        resp = widget(lambda r: SortedDict([('a', 1),
+        resp = widget(lambda r: OrderedDict([('a', 1),
                 ('b', 2)]))(self.xml_request)
         self.assertEqual('<?xml version="1.0" ?><root><a>1</a><b>2</b></root>',
                 resp.content)
 
     def test_dict_json(self):
-        resp = widget(lambda r: SortedDict([('a', 1),
+        resp = widget(lambda r: OrderedDict([('a', 1),
                 ('b', 2)]))(self.json_request)
         self.assertEqual('{"a": 1, "b": 2}', resp.content)
 
@@ -112,8 +112,8 @@ class WidgetDecoratorTestCase(TestCase):
                 resp.content)
 
     def test_dict_list_json(self):
-        resp = widget(lambda r: {'item': [SortedDict([('value', 1),
-                ('text', "test1")]), SortedDict([('value', 2), ('text',
+        resp = widget(lambda r: {'item': [OrderedDict([('value', 1),
+                ('text', "test1")]), OrderedDict([('value', 2), ('text',
                         "test2")])]})(self.json_request)
         self.assertEqual('{"item": [{"value": 1, "text": "test1"}, '
                 '{"value": 2, "text": "test2"}]}', resp.content)
@@ -404,7 +404,7 @@ class BulletGraphDecoratorTestCase(TestCase):
                 '"axis": {"point": [1, 5, 10, 15, 20]}'
                 '}, '
                 '"orientation": "vertical"'
-                '}', 
+                '}',
                 resp.content)
 
     def test_point_generation(self):
@@ -431,6 +431,5 @@ class BulletGraphDecoratorTestCase(TestCase):
                 '"axis": {"point": [0, 5, 10, 15, 20]}'
                 '}, '
                 '"orientation": "vertical"'
-                '}', 
+                '}',
                 resp.content)
-
